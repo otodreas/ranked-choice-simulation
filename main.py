@@ -119,10 +119,10 @@ def main():
     print("Starting ranked choice election simulation")
     simulate_ballot_casting(election)
     election.determine_winner()
-    
+
     print("After round 0:")
     print_results(election)
-    
+
     # Start instant runnoff/ranked choice voting until a majority winner is declared
     i = 0
     while not election.majority_winner:

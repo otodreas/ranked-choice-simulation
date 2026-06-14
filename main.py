@@ -25,8 +25,7 @@ class Ballot:
         self.candidate_win_probabilities = p_raw / np.sum(p_raw, axis=0)
 
     def rank_ballot(self):
-        """Simulate an individual vote, with unique probabilities for each round
-        """
+        """Simulate an individual vote, with unique probabilities for each round"""
 
         # Assign global variables
         self.candidates_ranked = []
@@ -35,9 +34,8 @@ class Ballot:
         n_candidates_ranked = np.random.randint(1, len(self.candidates) + 1)
         available_candidates = self.candidates
         p_local = self.candidate_win_probabilities
-        
+
         for c in range(n_candidates_ranked):
-            
             # Select candidate based on probability at a given rank (2nd, 3rd place, etc.)
             candidate_chosen = np.random.choice(
                 available_candidates,
@@ -91,8 +89,7 @@ class Election:
         self.majority_winner = self.results[self.winner] > 0.5
 
     def rerank(self):
-        """Recount votes after the losing candidate has been eliminated
-        """
+        """Recount votes after the losing candidate has been eliminated"""
         self.eliminated_candidates.append(self.loser)
         discard_voter_ids = []
         for voter_id, ballot in self.votes.items():
@@ -123,8 +120,7 @@ def simulate_ballot_casting(
     candidates: NDArray = CANDIDATES,
     n_ballots: int = N_BALLOTS_CAST,
 ):
-    """Simulate the casting of ballots, save voter id
-    """
+    """Simulate the casting of ballots, save voter id"""
     for voter in range(n_ballots):
         ballot = Ballot(candidates)
         ballot.rank_ballot()

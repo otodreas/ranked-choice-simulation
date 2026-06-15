@@ -127,10 +127,10 @@ class Election:
         for discard_voter_id in discard_voter_ids:
             del self.votes[discard_voter_id]
 
-
-def print_results(election: Election):
-    for candidate, percent in election.results.items():
-        print(f"{candidate}: {np.round(percent * 100, 1)}%")
+    def print_results(self, preamble: str):
+        print(preamble)
+        for candidate, percent in self.results.items():
+            print(f"{candidate}: {np.round(percent * 100, 1)}%")
 
 
 def main():
@@ -142,8 +142,7 @@ def main():
     election.simulate_ballot_casting()
     election.determine_winner()
 
-    print("After initial count:")
-    print_results(election)
+    election.print_results("After initial count:")
 
     # Start instant runnoff/ranked choice voting until a majority winner is declared
     i = 0
@@ -152,8 +151,7 @@ def main():
         election.runoff()
         election.determine_winner()
 
-        print(f"After round {i}:")
-        print_results(election)
+        election.print_results(f"After round {i}:")
 
     print(f"Winner: {election.winner} after {i} rounds")
 

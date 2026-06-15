@@ -12,13 +12,13 @@ CANDIDATES: dict[str, list[float]] = {
     "C": [2, 1, 1, 1],
     "D": [3, 5, 6, 5],
 }
-N_BALLOTS_CAST: int = 1_000_000
+N_BALLOTS_CAST: int = 1_000
 
 
 class Ballot:
     """One ballot"""
 
-    def __init__(self, candidates: dict[str, float]):
+    def __init__(self, candidates: dict[str, list[float]]):
         self.valid = True
         self.candidates = list(candidates.keys())
 
@@ -68,12 +68,18 @@ class Ballot:
 class Election:
     """One election, made up of many :Ballot: objects, each cast by a unique voter"""
 
-    def __init__(self):
+    def __init__(self, candidates: dict[str, list[float]] = CANDIDATES, n_ballots: int = N_BALLOTS_CAST):
+        self.candidates = candidates
+        self.n_ballots = n_ballots
         self.votes = {}
         self.eliminated_candidates = []
 
-    def submit_ballot(self, ballot: Ballot, voter_id: uuid.UUID):
-        self.votes[voter_id] = ballot
+    def simulate_ballot_casting(self):
+        """Simulate the casting of ballots, save voter id"""
+        for voter in range(self.n_ballots):
+            ballot = Ballot(self.candidates)
+            ballot.rank_ballot()
+            self.votes[uuid.uuid4()] = ballot
 
     def determine_winner(self):
         """Determine winner of election. Meant to be run iteratively following runoff"""
@@ -122,18 +128,6 @@ class Election:
             del self.votes[discard_voter_id]
 
 
-def simulate_ballot_casting(
-    election: Election,
-    candidates: NDArray = CANDIDATES,
-    n_ballots: int = N_BALLOTS_CAST,
-):
-    """Simulate the casting of ballots, save voter id"""
-    for voter in range(n_ballots):
-        ballot = Ballot(candidates)
-        ballot.rank_ballot()
-        election.submit_ballot(ballot, voter_id=uuid.uuid4())
-
-
 def print_results(election: Election):
     for candidate, percent in election.results.items():
         print(f"{candidate}: {np.round(percent * 100, 1)}%")
@@ -145,7 +139,7 @@ def main():
 
     # Simulate ballot casting and determine the winner
     print("Starting ranked choice election simulation")
-    simulate_ballot_casting(election)
+    election.simulate_ballot_casting()
     election.determine_winner()
 
     print("After initial count:")

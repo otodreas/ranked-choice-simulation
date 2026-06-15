@@ -3,16 +3,16 @@ import uuid
 import numpy as np
 from numpy.typing import NDArray
 
-np.random.seed(0)
+np.random.seed(42)
 
 # Build a square matrix of win probability per rank position
 CANDIDATES: dict[str, list[float]] = {
     "A": [4, 1, 1, 1],
     "B": [2, 1, 1, 1],
-    "C": [3, 1, 1, 1],
-    "D": [2, 5, 6, 5],
+    "C": [2, 1, 1, 1],
+    "D": [3, 5, 6, 5],
 }
-N_BALLOTS_CAST: int = 1_000
+N_BALLOTS_CAST: int = 1_000_000
 
 
 class Ballot:
@@ -141,7 +141,7 @@ def main():
     simulate_ballot_casting(election)
     election.determine_winner()
 
-    print("After round 0:")
+    print("After initial count:")
     print_results(election)
 
     # Start instant runnoff/ranked choice voting until a majority winner is declared
@@ -151,7 +151,7 @@ def main():
         election.rerank()
         election.determine_winner()
 
-        print(f"Eliminating {election.loser}\nAfter round {i}:")
+        print(f"After round {i}:")
         print_results(election)
 
     print(f"Winner: {election.winner} after {i} rounds")

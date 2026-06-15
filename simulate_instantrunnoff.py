@@ -81,7 +81,7 @@ class Election:
             ballot.rank_ballot()
             self.votes[uuid.uuid4()] = ballot
 
-    def determine_winner(self):
+    def tabulate(self):
         """Determine winner of election. Meant to be run iteratively following runoff"""
 
         self.results = {}
@@ -140,7 +140,7 @@ def main():
     # Simulate ballot casting and determine the winner
     print("Starting ranked choice election simulation")
     election.simulate_ballot_casting()
-    election.determine_winner()
+    election.tabulate()
 
     election.print_results("After initial count:")
 
@@ -149,7 +149,7 @@ def main():
     while not election.majority_winner:
         i += 1
         election.runoff()
-        election.determine_winner()
+        election.tabulate()
 
         election.print_results(f"After round {i}:")
 

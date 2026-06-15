@@ -16,6 +16,8 @@ N_BALLOTS_CAST: int = 1_000_000
 
 
 class Ballot:
+    """One ballot"""
+
     def __init__(self, candidates: dict[str, float]):
         self.valid = True
         self.candidates = list(candidates.keys())
@@ -64,6 +66,8 @@ class Ballot:
 
 
 class Election:
+    """One election, made up of many :Ballot: objects, each cast by a unique voter"""
+
     def __init__(self):
         self.votes = {}
         self.eliminated_candidates = []
@@ -72,6 +76,8 @@ class Election:
         self.votes[voter_id] = ballot
 
     def determine_winner(self):
+        """Determine winner of election. Meant to be run iteratively following runoff"""
+
         self.results = {}
         for ballot in self.votes.values():
             ballot.get_top_vote()
@@ -88,8 +94,9 @@ class Election:
         self.winner = max(self.results, key=self.results.get)
         self.majority_winner = self.results[self.winner] > 0.5
 
-    def rerank(self):
+    def runoff(self):
         """Recount votes after the losing candidate has been eliminated"""
+
         self.eliminated_candidates.append(self.loser)
         discard_voter_ids = []
         for voter_id, ballot in self.votes.items():
@@ -148,7 +155,7 @@ def main():
     i = 0
     while not election.majority_winner:
         i += 1
-        election.rerank()
+        election.runoff()
         election.determine_winner()
 
         print(f"After round {i}:")
